@@ -1,0 +1,156 @@
+npx sequelize-cli migration:generate --name create-services
+
+
+npx sequelize-cli migration:generate --name create-packages
+
+await queryInterface.createTable("packages", {
+  id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
+  name: Sequelize.STRING,
+  price: Sequelize.DECIMAL(10,2),
+  speed: Sequelize.STRING,
+  installation: Sequelize.STRING,
+  status: { type: Sequelize.BOOLEAN, defaultValue: true },
+  ServiceId: {
+    type: Sequelize.INTEGER,
+    references: { model: "services", key: "id" },
+    onDelete: "CASCADE"
+  },
+  createdAt: Sequelize.DATE,
+  updatedAt: Sequelize.DATE
+});
+
+
+npx sequelize-cli migration:generate --name create-package-features
+
+
+await queryInterface.createTable("package_features", {
+  id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
+  feature: Sequelize.STRING,
+  PackageId: {
+    type: Sequelize.INTEGER,
+    references: { model: "packages", key: "id" },
+    onDelete: "CASCADE"
+  },
+  createdAt: Sequelize.DATE,
+  updatedAt: Sequelize.DATE
+});
+
+
+migration:generate --name create-divisions
+
+createTable("divisions", {
+  id: { type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
+  name: Sequelize.STRING,
+  createdAt: Sequelize.DATE,
+  updatedAt: Sequelize.DATE
+});
+
+
+npx sequelize-cli migration:generate --name create-users
+
+createTable("users", {
+  id: { type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
+  name: Sequelize.STRING,
+  email: { type: Sequelize.STRING, unique: true },
+  password: Sequelize.STRING,
+  role: { type: Sequelize.STRING, defaultValue: "admin" },
+  createdAt: Sequelize.DATE,
+  updatedAt: Sequelize.DATE
+});
+
+
+migration:generate --name create-services
+
+createTable("services", {
+  id: { type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
+  code: { type: Sequelize.STRING, unique: true },
+  name: Sequelize.STRING,
+  description: Sequelize.TEXT,
+  status: { type: Sequelize.BOOLEAN, defaultValue: true },
+  createdAt: Sequelize.DATE,
+  updatedAt: Sequelize.DATE
+});
+
+
+migration:generate --name create-service-features
+
+createTable("service_features", {
+  id: { type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
+  feature: Sequelize.STRING,
+  ServiceId: {
+    type: Sequelize.INTEGER,
+    references: { model: "services", key: "id" },
+    onDelete: "CASCADE"
+  },
+  createdAt: Sequelize.DATE,
+  updatedAt: Sequelize.DATE
+});
+
+
+migration:generate --name create-packages
+
+createTable("packages", {
+  id: { type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
+  name: Sequelize.STRING,
+  price: Sequelize.DECIMAL(10,2),
+  speed: Sequelize.STRING,
+  installation: Sequelize.STRING,
+  status: Sequelize.BOOLEAN,
+  ServiceId: {
+    type: Sequelize.INTEGER,
+    references: { model: "services", key: "id" },
+    onDelete: "CASCADE"
+  },
+  createdAt: Sequelize.DATE,
+  updatedAt: Sequelize.DATE
+});
+
+
+migration:generate --name create-package-features
+
+createTable("package_features", {
+  id: { type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
+  feature: Sequelize.STRING,
+  PackageId: {
+    type: Sequelize.INTEGER,
+    references: { model: "packages", key: "id" },
+    onDelete: "CASCADE"
+  },
+  createdAt: Sequelize.DATE,
+  updatedAt: Sequelize.DATE
+});
+
+Divisions:
+createTable("divisions", {
+  id: { type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
+  name: Sequelize.STRING,
+  createdAt: Sequelize.DATE,
+  updatedAt: Sequelize.DATE
+});
+
+Districts:
+DivisionId → divisions.id
+
+Upazilas:
+DistrictId → districts.id
+
+Coverages:
+UpazilaId → upazilas.id
+
+SLIDERS (WITH FILE UPLOAD):
+createTable("sliders", {
+  id: { type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
+  title: Sequelize.STRING,
+  subtitle: Sequelize.STRING,
+  badge: Sequelize.STRING,
+  imagePosition: Sequelize.STRING,
+  createdAt: Sequelize.DATE,
+  updatedAt: Sequelize.DATE
+});
+
+
+RUN MIGRATIONS
+npx sequelize-cli db:migrate
+
+Rollback if needed:
+npx sequelize-cli db:migrate:undo

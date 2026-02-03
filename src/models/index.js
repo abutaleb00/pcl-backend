@@ -1,0 +1,99 @@
+const { Sequelize, DataTypes } = require("sequelize");
+const sequelize = require("../config/database");
+
+/* ===============================
+   Initialize DB
+================================ */
+const db = {};
+
+db.Sequelize = Sequelize;
+db.sequelize = sequelize;
+
+/* ===============================
+   Models
+================================ */
+
+/* Auth */
+db.User = require("./user")(sequelize, DataTypes);
+
+/* SEO (Global + Page-based) */
+db.SeoSetting = require("./seoSetting")(sequelize, DataTypes);
+
+/* Blog */
+db.Blog = require("./blog")(sequelize, DataTypes);
+
+/* Inquiry */
+db.Inquiry = require("./inquiry")(sequelize, DataTypes);
+
+/* Slider */
+db.Slider = require("./slider")(sequelize, DataTypes);
+db.SliderImage = require("./sliderImage")(sequelize, DataTypes);
+db.SliderButton = require("./sliderButton")(sequelize, DataTypes);
+
+/* Services & Packages */
+db.Service = require("./service")(sequelize, DataTypes);
+db.ServiceFeature = require("./serviceFeature")(sequelize, DataTypes);
+
+db.Package = require("./package")(sequelize, DataTypes);
+db.PackageFeature = require("./packageFeature")(sequelize, DataTypes);
+
+/* Coverage */
+db.Division = require("./division")(sequelize, DataTypes);
+db.District = require("./district")(sequelize, DataTypes);
+db.Upazila = require("./upazila")(sequelize, DataTypes);
+db.Coverage = require("./coverage")(sequelize, DataTypes);
+
+/* Contact */
+db.Contact = require("./contact")(sequelize, DataTypes);
+db.ContactPhone = require("./contactPhone")(sequelize, DataTypes);
+db.ContactEmail = require("./contactEmail")(sequelize, DataTypes);
+db.ContactInfo = require("./contactInfo")(sequelize, DataTypes);
+
+/* ===============================
+   Associations
+================================ */
+
+/* User → Blog */
+db.User.hasMany(db.Blog, { foreignKey: "UserId", onDelete: "CASCADE" });
+db.Blog.belongsTo(db.User, { foreignKey: "UserId" });
+
+/* Blog → SEO (optional per page later) */
+db.SeoSetting.belongsTo(db.Blog, { foreignKey: "blog_id" });
+db.Blog.hasOne(db.SeoSetting, { foreignKey: "blog_id" });
+
+/* Slider */
+db.Slider.hasMany(db.SliderImage, { as: "images", onDelete: "CASCADE" });
+db.SliderImage.belongsTo(db.Slider);
+
+db.Slider.hasMany(db.SliderButton, { as: "buttons", onDelete: "CASCADE" });
+db.SliderButton.belongsTo(db.Slider);
+
+/* Services */
+db.Service.hasMany(db.ServiceFeature, { as: "features", onDelete: "CASCADE" });
+db.ServiceFeature.belongsTo(db.Service);
+
+db.Service.hasMany(db.Package, { as: "packages", onDelete: "CASCADE" });
+db.Package.belongsTo(db.Service);
+
+/* Packages */
+db.Package.hasMany(db.PackageFeature, { as: "features", onDelete: "CASCADE" });
+db.PackageFeature.belongsTo(db.Package);
+
+/* Coverage */
+db.Division.hasMany(db.District, { onDelete: "CASCADE" });
+db.District.belongsTo(db.Division);
+
+db.District.hasMany(db.Upazila, { onDelete: "CASCADE" });
+db.Upazila.belongsTo(db.District);
+
+db.Upazila.hasOne(db.Coverage, { onDelete: "CASCADE" });
+db.Coverage.belongsTo(db.Upazila);
+
+/* Contact */
+db.Contact.hasMany(db.ContactPhone, { as: "phones", foreignKey: "contact_id" });
+db.ContactPhone.belongsTo(db.Contact, { foreignKey: "contact_id" });
+
+db.Contact.hasMany(db.ContactEmail, { as: "emails", foreignKey: "contact_id" });
+db.ContactEmail.belongsTo(db.Contact, { foreignKey: "contact_id" });
+
+module.exports = db;
