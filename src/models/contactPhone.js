@@ -1,15 +1,16 @@
 module.exports = (sequelize, DataTypes) => {
     const ContactPhone = sequelize.define(
-        "ContactPhone",
+        'ContactPhone',
         {
             phone: {
                 type: DataTypes.STRING,
-                allowNull: false
-            }
+                allowNull: false,
+            },
         },
         {
-            tableName: "contact_phones",
-            timestamps: false
+            tableName: 'contact_phones',
+            timestamps: false,
+            underscored: true,
         }
     );
 

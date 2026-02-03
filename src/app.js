@@ -23,6 +23,7 @@ app.use("/", require("./routes/sitemap.routes"));
 
 // Auth
 app.use("/api/auth", require("./routes/auth.routes"));
+app.use("/api/users", require("./routes/user.routes"));
 
 // Home / CMS
 app.use("/api/sliders", require("./routes/sliders.routes"));
@@ -41,6 +42,9 @@ app.use("/api/inquiries", require("./routes/inquiry.routes"));
 
 // Blog
 app.use("/api/blogs", require("./routes/blog.routes"));
+
+// SEO
+app.use("/api/seo", require("./routes/seo.routes"));
 
 /* ===============================
    Health Check (Optional)

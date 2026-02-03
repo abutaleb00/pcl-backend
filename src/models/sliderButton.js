@@ -1,25 +1,27 @@
 module.exports = (sequelize, DataTypes) => {
-    const SliderButton = sequelize.define(
+    return sequelize.define(
         "SliderButton",
         {
+            slider_id: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+            },
             label: {
                 type: DataTypes.STRING,
-                allowNull: false
+                allowNull: false,
             },
-            image_url: {
+            link: {
                 type: DataTypes.STRING,
-                allowNull: false
+                allowNull: false,
             },
             type: {
-                type: DataTypes.STRING,
-                allowNull: false
-            }
+                type: DataTypes.ENUM("primary", "secondary"),
+                defaultValue: "primary",
+            },
         },
         {
             tableName: "slider_buttons",
-            timestamps: false
+            timestamps: false,
         }
     );
-
-    return SliderButton;
 };

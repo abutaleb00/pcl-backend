@@ -6,24 +6,30 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.STRING,
                 allowNull: false,
             },
+
             email: {
                 type: DataTypes.STRING,
                 allowNull: false,
             },
+
             phone: {
                 type: DataTypes.STRING,
             },
+
             subject: {
                 type: DataTypes.STRING,
             },
+
             service_interest: {
                 type: DataTypes.STRING,
             },
+
             message: {
                 type: DataTypes.TEXT,
             },
+
             status: {
-                type: DataTypes.STRING,
+                type: DataTypes.ENUM("new", "read", "replied", "closed"),
                 defaultValue: "new",
             },
         },

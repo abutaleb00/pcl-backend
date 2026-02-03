@@ -6,7 +6,9 @@ const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "7d";
 
 /**
+ * =========================
  * REGISTER
+ * =========================
  */
 exports.register = async (req, res) => {
     try {
@@ -14,13 +16,21 @@ exports.register = async (req, res) => {
 
         // validation
         if (!name || !email || !password) {
-            return res.status(400).json({ error: "All fields are required" });
+            return res.status(400).json({
+                error: "Name, email and password are required",
+            });
         }
 
-        // check existing user
-        const existing = await User.findOne({ where: { email } });
+        // check existing user (including soft-deleted)
+        const existing = await User.findOne({
+            where: { email },
+            paranoid: false,
+        });
+
         if (existing) {
-            return res.status(409).json({ error: "Email already registered" });
+            return res.status(409).json({
+                error: "Email already registered",
+            });
         }
 
         // hash password
@@ -32,7 +42,7 @@ exports.register = async (req, res) => {
             email,
             password: hashedPassword,
             role: "user",
-            status: true,
+            status: true, // active by default
         });
 
         res.status(201).json({
@@ -43,14 +53,16 @@ exports.register = async (req, res) => {
                 email: user.email,
             },
         });
-
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        console.error("Register error:", error);
+        res.status(500).json({ error: "Registration failed" });
     }
 };
 
 /**
+ * =========================
  * LOGIN
+ * =========================
  */
 exports.login = async (req, res) => {
     try {
@@ -58,28 +70,43 @@ exports.login = async (req, res) => {
 
         // validation
         if (!email || !password) {
-            return res.status(400).json({ error: "Email & password required" });
+            return res.status(400).json({
+                error: "Email and password are required",
+            });
         }
 
-        // find user
-        const user = await User.findOne({ where: { email } });
+        // find user (exclude soft deleted users)
+        const user = await User.findOne({
+            where: { email },
+        });
+
         if (!user) {
-            return res.status(401).json({ error: "Invalid credentials" });
+            return res.status(401).json({
+                error: "Invalid email or password",
+            });
         }
 
+        // check active / deactive
         if (!user.status) {
-            return res.status(403).json({ error: "User is disabled" });
+            return res.status(403).json({
+                error: "Your account is deactivated. Contact admin.",
+            });
         }
 
         // compare password
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.status(401).json({ error: "Invalid credentials" });
+            return res.status(401).json({
+                error: "Invalid email or password",
+            });
         }
 
-        // create token
+        // create JWT
         const token = jwt.sign(
-            { id: user.id, role: user.role },
+            {
+                id: user.id,
+                role: user.role,
+            },
             JWT_SECRET,
             { expiresIn: JWT_EXPIRES_IN }
         );
@@ -92,16 +119,21 @@ exports.login = async (req, res) => {
                 name: user.name,
                 email: user.email,
                 role: user.role,
+                status: user.status,
             },
         });
-
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        console.error("Login error:", error);
+        res.status(500).json({ error: "Login failed" });
     }
 };
 
-
+/**
+ * =========================
+ * LOGOUT
+ * =========================
+ * JWT logout handled by frontend
+ */
 exports.logout = async (req, res) => {
-    // JWT logout is frontend-handled
     res.json({ message: "Logged out successfully" });
 };

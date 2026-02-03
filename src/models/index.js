@@ -59,14 +59,30 @@ db.Blog.belongsTo(db.User, { foreignKey: "UserId" });
 
 /* Blog → SEO (optional per page later) */
 db.SeoSetting.belongsTo(db.Blog, { foreignKey: "blog_id" });
-db.Blog.hasOne(db.SeoSetting, { foreignKey: "blog_id" });
+db.Blog.hasOne(db.SeoSetting, {
+  foreignKey: 'blog_id',
+  as: 'seo',
+});
 
 /* Slider */
-db.Slider.hasMany(db.SliderImage, { as: "images", onDelete: "CASCADE" });
-db.SliderImage.belongsTo(db.Slider);
+db.Slider.hasMany(db.SliderImage, {
+  as: "images",
+  foreignKey: "slider_id",
+  onDelete: "CASCADE",
+});
+db.SliderImage.belongsTo(db.Slider, {
+  foreignKey: "slider_id",
+});
 
-db.Slider.hasMany(db.SliderButton, { as: "buttons", onDelete: "CASCADE" });
-db.SliderButton.belongsTo(db.Slider);
+// Slider → Buttons
+db.Slider.hasMany(db.SliderButton, {
+  as: "buttons",
+  foreignKey: "slider_id",
+  onDelete: "CASCADE",
+});
+db.SliderButton.belongsTo(db.Slider, {
+  foreignKey: "slider_id",
+});
 
 /* Services */
 db.Service.hasMany(db.ServiceFeature, { as: "features", onDelete: "CASCADE" });
@@ -90,10 +106,16 @@ db.Upazila.hasOne(db.Coverage, { onDelete: "CASCADE" });
 db.Coverage.belongsTo(db.Upazila);
 
 /* Contact */
-db.Contact.hasMany(db.ContactPhone, { as: "phones", foreignKey: "contact_id" });
-db.ContactPhone.belongsTo(db.Contact, { foreignKey: "contact_id" });
-
 db.Contact.hasMany(db.ContactEmail, { as: "emails", foreignKey: "contact_id" });
 db.ContactEmail.belongsTo(db.Contact, { foreignKey: "contact_id" });
+db.Contact.hasMany(db.ContactPhone, {
+  foreignKey: 'contact_id',
+  as: 'phones',
+  onDelete: 'CASCADE',
+});
+
+db.ContactPhone.belongsTo(db.Contact, {
+  foreignKey: 'contact_id',
+});
 
 module.exports = db;

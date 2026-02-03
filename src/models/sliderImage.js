@@ -1,17 +1,25 @@
 module.exports = (sequelize, DataTypes) => {
-    const SliderImage = sequelize.define(
+    return sequelize.define(
         "SliderImage",
         {
-            imageUrl: {
+            slider_id: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+            },
+
+            image_url: {
                 type: DataTypes.STRING,
-                allowNull: false
-            }
+                allowNull: false,
+            },
+
+            sort_order: {
+                type: DataTypes.INTEGER,
+                defaultValue: 0,
+            },
         },
         {
             tableName: "slider_images",
-            timestamps: false
+            timestamps: false,
         }
     );
-
-    return SliderImage;
 };

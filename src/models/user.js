@@ -32,11 +32,16 @@ module.exports = (sequelize, DataTypes) => {
             status: {
                 type: DataTypes.BOOLEAN,
                 defaultValue: true,
+                comment: "true = active, false = deactive",
             },
         },
         {
             tableName: "users",
+            paranoid: true,
+            deletedAt: "deleted_at",
             timestamps: true,
+            createdAt: "created_at",
+            updatedAt: "updated_at",
         }
     );
 
