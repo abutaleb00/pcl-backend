@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
                 allowNull: false,
             },
 
-            PackageId: {
+            package_id: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
             },

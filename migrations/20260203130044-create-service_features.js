@@ -6,7 +6,7 @@ module.exports = {
     await queryInterface.createTable("service_features", {
       id: { type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
       feature: { type: Sequelize.STRING, allowNull: false },
-      ServiceId: {
+      service_id: {
         type: Sequelize.INTEGER,
         references: { model: "services", key: "id" },
         onDelete: "CASCADE",

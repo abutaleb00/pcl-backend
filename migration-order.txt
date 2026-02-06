@@ -10,7 +10,7 @@ await queryInterface.createTable("packages", {
   speed: Sequelize.STRING,
   installation: Sequelize.STRING,
   status: { type: Sequelize.BOOLEAN, defaultValue: true },
-  ServiceId: {
+  service_id: {
     type: Sequelize.INTEGER,
     references: { model: "services", key: "id" },
     onDelete: "CASCADE"
@@ -26,7 +26,7 @@ npx sequelize-cli migration:generate --name create-package-features
 await queryInterface.createTable("package_features", {
   id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
   feature: Sequelize.STRING,
-  PackageId: {
+  package_id: {
     type: Sequelize.INTEGER,
     references: { model: "packages", key: "id" },
     onDelete: "CASCADE"
@@ -77,7 +77,7 @@ migration:generate --name create-service-features
 createTable("service_features", {
   id: { type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
   feature: Sequelize.STRING,
-  ServiceId: {
+  service_id: {
     type: Sequelize.INTEGER,
     references: { model: "services", key: "id" },
     onDelete: "CASCADE"
@@ -96,7 +96,7 @@ createTable("packages", {
   speed: Sequelize.STRING,
   installation: Sequelize.STRING,
   status: Sequelize.BOOLEAN,
-  ServiceId: {
+  service_id: {
     type: Sequelize.INTEGER,
     references: { model: "services", key: "id" },
     onDelete: "CASCADE"
@@ -111,7 +111,7 @@ migration:generate --name create-package-features
 createTable("package_features", {
   id: { type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
   feature: Sequelize.STRING,
-  PackageId: {
+  package_id: {
     type: Sequelize.INTEGER,
     references: { model: "packages", key: "id" },
     onDelete: "CASCADE"

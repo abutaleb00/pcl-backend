@@ -10,7 +10,7 @@ module.exports = {
       speed: Sequelize.STRING,
       installation: Sequelize.STRING,
       status: Sequelize.BOOLEAN,
-      ServiceId: {
+      service_id: {
         type: Sequelize.INTEGER,
         references: { model: "services", key: "id" },
         onDelete: "CASCADE",

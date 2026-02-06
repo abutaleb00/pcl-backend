@@ -85,6 +85,7 @@ db.SliderButton.belongsTo(db.Slider, {
 });
 
 /* Services */
+/* Services */
 db.Service.hasMany(db.ServiceFeature, {
   as: "features",
   foreignKey: "service_id",
@@ -95,12 +96,27 @@ db.ServiceFeature.belongsTo(db.Service, {
   foreignKey: "service_id"
 });
 
-db.Service.hasMany(db.Package, { as: "packages", onDelete: "CASCADE" });
-db.Package.belongsTo(db.Service);
+/* Service → Package */
+db.Service.hasMany(db.Package, {
+  as: "packages",
+  foreignKey: "service_id",
+  onDelete: "CASCADE"
+});
 
-/* Packages */
-db.Package.hasMany(db.PackageFeature, { as: "features", onDelete: "CASCADE" });
-db.PackageFeature.belongsTo(db.Package);
+db.Package.belongsTo(db.Service, {
+  foreignKey: "service_id"
+});
+
+/* Package → PackageFeature */
+db.Package.hasMany(db.PackageFeature, {
+  as: "features",
+  foreignKey: "package_id",
+  onDelete: "CASCADE"
+});
+
+db.PackageFeature.belongsTo(db.Package, {
+  foreignKey: "package_id"
+});
 
 /* Coverage */
 db.Division.hasMany(db.District, { onDelete: "CASCADE" });

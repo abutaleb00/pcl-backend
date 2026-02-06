@@ -3,7 +3,7 @@ const { Package, PackageFeature, Service } = require("../models");
 exports.create = async (req, res) => {
   try {
     const {
-      ServiceId,
+      service_id,
       name,
       speed,
       price,
@@ -14,14 +14,14 @@ exports.create = async (req, res) => {
       features
     } = req.body;
 
-    if (!ServiceId || !name) {
+    if (!service_id || !name) {
       return res.status(400).json({
         message: "service and name required"
       });
     }
 
     const pkg = await Package.create({
-      ServiceId,
+      service_id,
       name,
       speed,
       price,
@@ -35,7 +35,7 @@ exports.create = async (req, res) => {
       await PackageFeature.bulkCreate(
         features.map(f => ({
           feature: f,
-          PackageId: pkg.id
+          package_id: pkg.id
         }))
       );
     }
@@ -91,7 +91,7 @@ exports.update = async (req, res) => {
     }
 
     const {
-      ServiceId,
+      service_id,
       name,
       speed,
       price,
@@ -103,7 +103,7 @@ exports.update = async (req, res) => {
     } = req.body;
 
     await pkg.update({
-      ServiceId,
+      service_id,
       name,
       speed,
       price,
@@ -115,7 +115,7 @@ exports.update = async (req, res) => {
 
     // replace features
     await PackageFeature.destroy({
-      where: { PackageId: pkg.id },
+      where: { package_id: pkg.id },
       transaction
     });
 
@@ -123,7 +123,7 @@ exports.update = async (req, res) => {
       await PackageFeature.bulkCreate(
         features.map(f => ({
           feature: f,
-          PackageId: pkg.id
+          package_id: pkg.id
         })),
         { transaction }
       );
