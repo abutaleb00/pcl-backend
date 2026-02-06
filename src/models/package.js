@@ -10,6 +10,15 @@ module.exports = (sequelize, DataTypes) => {
         },
         speed: DataTypes.STRING,
         installation: DataTypes.STRING,
+        order: {
+            type: DataTypes.INTEGER,
+            defaultValue: 0
+        },
+
+        isPopular: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
+        },
         status: {
             type: DataTypes.TINYINT,
             defaultValue: 1

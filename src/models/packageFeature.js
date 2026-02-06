@@ -1,8 +1,28 @@
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define("PackageFeature", {
-        feature: {
-            type: DataTypes.STRING,
-            allowNull: false
+    const PackageFeature = sequelize.define(
+        "PackageFeature",
+        {
+            id: {
+                type: DataTypes.INTEGER,
+                primaryKey: true,
+                autoIncrement: true,
+            },
+
+            feature: {
+                type: DataTypes.STRING,
+                allowNull: false,
+            },
+
+            PackageId: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+            },
+        },
+        {
+            tableName: "package_features",
+            timestamps: false,
         }
-    });
+    );
+
+    return PackageFeature;
 };

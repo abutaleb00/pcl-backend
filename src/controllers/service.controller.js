@@ -28,6 +28,7 @@ exports.create = async (req, res) => {
 
     const service = await Service.create({
       code,
+      icon,
       name,
       description,
       status: 1
@@ -39,7 +40,7 @@ exports.create = async (req, res) => {
       await ServiceFeature.bulkCreate(
         parsedFeatures.map(f => ({
           feature: f,
-          ServiceId: service.id
+          service_id: service.id
         }))
       );
     }
@@ -91,7 +92,7 @@ exports.update = async (req, res) => {
   const transaction = await Service.sequelize.transaction();
 
   try {
-    const { code, name, description, status, features } = req.body;
+    const { code, icon, name, description, status, features } = req.body;
 
     const service = await Service.findByPk(req.params.id, { transaction });
     if (!service) {
@@ -116,7 +117,7 @@ exports.update = async (req, res) => {
 
     // ✅ Update service main fields
     await service.update(
-      { code, name, description, status },
+      { code, icon, name, description, status },
       { transaction }
     );
 
@@ -137,7 +138,7 @@ exports.update = async (req, res) => {
       }
 
       await ServiceFeature.destroy({
-        where: { ServiceId: service.id },
+        where: { service_id: service.id },
         transaction
       });
 
@@ -145,7 +146,7 @@ exports.update = async (req, res) => {
         await ServiceFeature.bulkCreate(
           featureList.map(f => ({
             feature: f,
-            ServiceId: service.id
+            service_id: service.id
           })),
           { transaction }
         );
