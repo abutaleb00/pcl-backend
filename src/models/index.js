@@ -118,15 +118,44 @@ db.PackageFeature.belongsTo(db.Package, {
   foreignKey: "package_id"
 });
 
-/* Coverage */
-db.Division.hasMany(db.District, { onDelete: "CASCADE" });
-db.District.belongsTo(db.Division);
+/* ===============================
+   Coverage Relations (FIXED)
+================================ */
 
-db.District.hasMany(db.Upazila, { onDelete: "CASCADE" });
-db.Upazila.belongsTo(db.District);
+/* Division → District */
+db.Division.hasMany(db.District, {
+  foreignKey: "DivisionId",
+  as: "districts",
+  onDelete: "CASCADE",
+});
+db.District.belongsTo(db.Division, {
+  foreignKey: "DivisionId",
+  as: "division",
+});
 
-db.Upazila.hasOne(db.Coverage, { onDelete: "CASCADE" });
-db.Coverage.belongsTo(db.Upazila);
+/* District → Upazila */
+db.District.hasMany(db.Upazila, {
+  foreignKey: "DistrictId",
+  as: "upazilas",
+  onDelete: "CASCADE",
+});
+db.Upazila.belongsTo(db.District, {
+  foreignKey: "DistrictId",
+  as: "district",
+});
+
+/* Upazila → Coverage (IMPORTANT FIX) */
+db.Upazila.hasOne(db.Coverage, {
+  foreignKey: "UpazilaId",
+  as: "coverage",
+  onDelete: "CASCADE",
+});
+
+db.Coverage.belongsTo(db.Upazila, {
+  foreignKey: "UpazilaId",
+  as: "upazila",
+});
+
 
 /* Contact */
 db.Contact.hasMany(db.ContactEmail, { as: "emails", foreignKey: "contact_id" });

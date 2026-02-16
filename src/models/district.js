@@ -1,8 +1,14 @@
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define("District", {
+    const District = sequelize.define("District", {
         name: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: false,
+        },
+        DivisionId: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
         }
     });
+
+    return District;
 };

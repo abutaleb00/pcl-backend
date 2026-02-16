@@ -1,9 +1,10 @@
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define("Division", {
+    const Division = sequelize.define("Division", {
         name: {
             type: DataTypes.STRING,
             allowNull: false,
-            unique: true
         }
     });
+
+    return Division;
 };

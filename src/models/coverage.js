@@ -1,9 +1,19 @@
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define("Coverage", {
+    const Coverage = sequelize.define("Coverage", {
+        UpazilaId: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            unique: true
+        },
         available: {
             type: DataTypes.TINYINT,
             defaultValue: 1
         },
-        notes: DataTypes.STRING
+        notes: {
+            type: DataTypes.STRING,
+            allowNull: true
+        }
     });
+
+    return Coverage;
 };

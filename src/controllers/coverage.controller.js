@@ -1,4 +1,4 @@
-const { Coverage, Upazila } = require("../models");
+const { Coverage, Upazila, District, Division } = require("../models");
 
 exports.create = async (req, res) => {
   try {
@@ -34,7 +34,8 @@ exports.getAll = async (req, res) => {
   try {
     const data = await Coverage.findAll({
       include: {
-        model: Upazila
+        model: Upazila,
+        as: "upazila"
       }
     });
     res.json(data);
@@ -47,7 +48,8 @@ exports.getById = async (req, res) => {
   try {
     const coverage = await Coverage.findByPk(req.params.id, {
       include: {
-        model: Upazila
+        model: Upazila,
+        as: "upazila"
       }
     });
 
@@ -66,11 +68,10 @@ exports.getByUpazila = async (req, res) => {
     const coverage = await Coverage.findOne({
       where: { UpazilaId: req.params.upazilaId },
       include: {
-        model: Upazila
+        model: Upazila,
+        as: "upazila"
       }
     });
-
-    // if no coverage row → not available
     if (!coverage) {
       return res.json({
         available: 0,
@@ -81,7 +82,7 @@ exports.getByUpazila = async (req, res) => {
     res.json({
       available: coverage.available,
       notes: coverage.notes,
-      upazila: coverage.Upazila.name
+      upazila: coverage.upazila.name
     });
 
   } catch (err) {
@@ -94,9 +95,14 @@ exports.getFullTree = async (req, res) => {
     const data = await Division.findAll({
       include: {
         model: District,
+        as: "districts",
         include: {
           model: Upazila,
-          include: Coverage
+          as: "upazilas",
+          include: {
+            model: Coverage,
+            as: "coverage"
+          }
         }
       },
       order: [["id", "ASC"]]
@@ -104,6 +110,7 @@ exports.getFullTree = async (req, res) => {
 
     res.json(data);
   } catch (err) {
+    console.error(err);
     res.status(500).json({ error: err.message });
   }
 };

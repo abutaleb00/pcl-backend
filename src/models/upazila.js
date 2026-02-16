@@ -1,8 +1,14 @@
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define("Upazila", {
+    const Upazila = sequelize.define("Upazila", {
         name: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: false,
+        },
+        DistrictId: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
         }
     });
+
+    return Upazila;
 };
