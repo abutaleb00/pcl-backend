@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define("Package", {
+    const Package = sequelize.define("Package", {
         name: {
             type: DataTypes.STRING,
             allowNull: false
@@ -14,7 +14,6 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             defaultValue: 0
         },
-
         isPopular: {
             type: DataTypes.BOOLEAN,
             defaultValue: false
@@ -23,5 +22,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.TINYINT,
             defaultValue: 1
         }
+    }, {
+        tableName: 'packages',
+        timestamps: true 
     });
+
+    return Package;
 };
