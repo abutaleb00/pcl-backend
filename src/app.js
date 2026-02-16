@@ -11,8 +11,12 @@ const app = express();
 
 const allowedOrigins = [
    "http://localhost:3000",
+   "http://localhost:5000",
    "http://127.0.0.1:3000",
    "http://localhost:5173",
+   "https://pcl-website.vercel.app",
+   "https://pcl.maanrishfaxyz.xyz",
+   "https://www.pcl.maanrishfaxyz.xyz",
 ];
 
 app.use(
@@ -23,6 +27,7 @@ app.use(
          if (allowedOrigins.includes(origin)) {
             callback(null, true);
          } else {
+            console.log("Blocked Origin:", origin);
             callback(new Error("Not allowed by CORS"));
          }
       },
@@ -34,13 +39,11 @@ app.use(
 
 app.options("*", cors());
 
-/* ===============================
+/* =====================
    Core Middlewares
-================================ */
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-// 🔥 Cookie parser MUST be before routes
+======================== */
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 app.use(cookieParser());
 
 /* ===============================
@@ -71,6 +74,7 @@ app.use("/api/inquiries", require("./routes/inquiry.routes"));
 
 app.use("/api/blogs", require("./routes/blog.routes"));
 app.use("/api/seo", require("./routes/seo.routes"));
+app.use("/api/dashboard", require("./routes/dashboard.routes"));
 
 /* ===============================
    Health Check
@@ -88,6 +92,10 @@ app.use((err, req, res, next) => {
          error: "CORS blocked this request",
          origin: req.headers.origin,
       });
+   }
+
+   if (err.type === 'entity.too.large') {
+      return res.status(413).json({ error: "File too large. Maximum limit is 50MB." });
    }
 
    console.error(err);

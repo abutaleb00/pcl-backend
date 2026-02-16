@@ -68,60 +68,55 @@ exports.login = async (req, res) => {
     try {
         const { email, password } = req.body;
 
-        // validation
+        // 1. Validation
         if (!email || !password) {
-            return res.status(400).json({
-                error: "Email and password are required",
-            });
+            return res.status(400).json({ error: "Email and password are required" });
         }
 
-        // find user (exclude soft deleted users)
-        const user = await User.findOne({
-            where: { email },
-        });
-
+        // 2. Find User
+        const user = await User.findOne({ where: { email } });
         if (!user) {
-            return res.status(401).json({
-                error: "Invalid email or password",
-            });
+            return res.status(401).json({ error: "Invalid email or password" });
         }
 
-        // check active / deactive
+        // 3. Check Status
         if (!user.status) {
-            return res.status(403).json({
-                error: "Your account is deactivated. Contact admin.",
-            });
+            return res.status(403).json({ error: "Account deactivated. Contact admin." });
         }
 
-        // compare password
+        // 4. Check Password
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.status(401).json({
-                error: "Invalid email or password",
-            });
+            return res.status(401).json({ error: "Invalid email or password" });
         }
 
-        // create JWT
+        // 5. Generate Token
         const token = jwt.sign(
-            {
-                id: user.id,
-                role: user.role,
-            },
+            { id: user.id, role: user.role },
             JWT_SECRET,
             { expiresIn: JWT_EXPIRES_IN }
         );
 
+        // 6. Set Cookie (Best effort for browsers)
+        res.cookie("admin_token", token, {
+            httpOnly: true,
+            secure: true,        // Required for HTTPS
+            sameSite: "none",    // Required for Cross-Site
+            maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+        });
+
+        // 7. Send Response (Token in Body is crucial for Vercel/VPS fix)
         res.json({
             message: "Login successful",
-            token,
+            token, // <--- Frontend needs this to save to localStorage
             user: {
                 id: user.id,
                 name: user.name,
                 email: user.email,
                 role: user.role,
-                status: user.status,
             },
         });
+
     } catch (error) {
         console.error("Login error:", error);
         res.status(500).json({ error: "Login failed" });
@@ -132,8 +127,14 @@ exports.login = async (req, res) => {
  * =========================
  * LOGOUT
  * =========================
- * JWT logout handled by frontend
  */
 exports.logout = async (req, res) => {
+    // ✅ Clear the cookie properly with the same options
+    res.clearCookie("admin_token", {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none"
+    });
+
     res.json({ message: "Logged out successfully" });
 };

@@ -4,7 +4,7 @@ module.exports = (sequelize, DataTypes) => {
         {
             title: {
                 type: DataTypes.STRING,
-                allowNull: false,
+                allowNull: true, // Allow null for image-only mode
             },
 
             subtitle: {
@@ -20,6 +20,14 @@ module.exports = (sequelize, DataTypes) => {
             imagePosition: {
                 type: DataTypes.ENUM("Left", "Right"),
                 defaultValue: "Left",
+            },
+            onlyImage: {
+                type: DataTypes.BOOLEAN,
+                defaultValue: false,
+            },
+            order: {
+                type: DataTypes.INTEGER,
+                defaultValue: 0,
             },
         },
         {

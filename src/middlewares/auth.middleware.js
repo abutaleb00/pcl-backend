@@ -5,27 +5,36 @@ const JWT_SECRET = process.env.JWT_SECRET;
 
 exports.verifyToken = async (req, res, next) => {
     try {
-        // 🔥 1. Read token from cookie
-        const token = req.cookies?.admin_token;
+        let token;
 
-        if (!token) {
-            return res.status(401).json({ error: "Unauthorized" });
+        // 🔥 OPTION 1: Check Authorization Header (Priority for Vercel/VPS)
+        if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
+            token = req.headers.authorization.split(" ")[1];
+        }
+        
+        // 🔥 OPTION 2: Check Cookie (Fallback for Localhost)
+        else if (req.cookies?.admin_token) {
+            token = req.cookies.admin_token;
         }
 
-        // 🔥 2. Verify token
+        if (!token) {
+            return res.status(401).json({ error: "Unauthorized: No token provided" });
+        }
+
+        // Verify Token
         const decoded = jwt.verify(token, JWT_SECRET);
 
-        // 🔥 3. Load user
+        // Load User
         const user = await User.findByPk(decoded.id);
         if (!user) {
             return res.status(401).json({ error: "User not found" });
         }
 
-        // 🔥 4. Attach user to request
         req.user = user;
         next();
 
     } catch (error) {
-        return res.status(401).json({ error: "Unauthorized" });
+        console.error("Auth Middleware Error:", error.message);
+        return res.status(401).json({ error: "Unauthorized: Invalid token" });
     }
 };
