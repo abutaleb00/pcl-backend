@@ -7,6 +7,7 @@ const { isAdmin } = require("../middlewares/role.middleware");
 router.post("/", verifyToken, isAdmin, upazilaController.create);
 router.get("/", upazilaController.getAll);
 router.get("/district/:districtId", upazilaController.getByDistrict);
+router.get("/:id", upazilaController.getById);
 router.put("/:id", verifyToken, isAdmin, upazilaController.update);
 router.delete("/:id", verifyToken, isAdmin, upazilaController.delete);
 

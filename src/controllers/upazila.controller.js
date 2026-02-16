@@ -1,4 +1,4 @@
-const { Upazila } = require("../models");
+const { Upazila, District, Division, Coverage } = require("../models");
 
 exports.create = async (req, res) => {
     try {
@@ -40,6 +40,36 @@ exports.getByDistrict = async (req, res) => {
     }
 };
 
+exports.getById = async (req, res) => {
+    try {
+        const upazila = await Upazila.findByPk(req.params.id, {
+            include: [
+                {
+                    model: District,
+                    attributes: ["id", "name"],
+                    include: [
+                        {
+                            model: Division,
+                            attributes: ["id", "name"]
+                        }
+                    ]
+                },
+                {
+                    model: Coverage
+                }
+            ]
+        });
+
+        if (!upazila) {
+            return res.status(404).json({ error: "Upazila not found" });
+        }
+
+        res.json(upazila);
+
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
 exports.update = async (req, res) => {
     try {
         const upazila = await Upazila.findByPk(req.params.id);

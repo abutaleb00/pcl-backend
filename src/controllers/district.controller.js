@@ -1,4 +1,4 @@
-const { District } = require("../models");
+const { District, Division, Upazila, Coverage } = require("../models");
 
 exports.create = async (req, res) => {
     try {
@@ -17,6 +17,39 @@ exports.getAll = async (req, res) => {
             order: [["id", "ASC"]]
         });
         res.json(districts);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+exports.getById = async (req, res) => {
+    try {
+        const district = await District.findByPk(req.params.id, {
+            include: [
+                {
+                    model: Division,
+                    attributes: ["id", "name"]
+                },
+                {
+                    model: Upazila,
+                    include: [
+                        {
+                            model: Coverage
+                        }
+                    ]
+                }
+            ],
+            order: [
+                [Upazila, "id", "ASC"]
+            ]
+        });
+
+        if (!district) {
+            return res.status(404).json({ error: "District not found" });
+        }
+
+        res.json(district);
+
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

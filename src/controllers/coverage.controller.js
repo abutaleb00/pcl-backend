@@ -2,16 +2,25 @@ const { Coverage, Upazila } = require("../models");
 
 exports.create = async (req, res) => {
   try {
-    const { UpazilaId, available } = req.body;
+    const { UpazilaId, available, notes } = req.body;
 
     const upazila = await Upazila.findByPk(UpazilaId);
     if (!upazila) {
       return res.status(404).json({ error: "Upazila not found" });
     }
 
+    // 🔴 prevent duplicate coverage
+    const existing = await Coverage.findOne({ where: { UpazilaId } });
+    if (existing) {
+      return res.status(400).json({
+        error: "Coverage already exists for this Upazila. Please update instead."
+      });
+    }
+
     const coverage = await Coverage.create({
       UpazilaId,
-      available
+      available,
+      notes
     });
 
     res.json(coverage);
@@ -19,6 +28,7 @@ exports.create = async (req, res) => {
     res.status(400).json({ error: err.message });
   }
 };
+
 
 exports.getAll = async (req, res) => {
   try {
@@ -33,6 +43,70 @@ exports.getAll = async (req, res) => {
   }
 };
 
+exports.getById = async (req, res) => {
+  try {
+    const coverage = await Coverage.findByPk(req.params.id, {
+      include: {
+        model: Upazila
+      }
+    });
+
+    if (!coverage) {
+      return res.status(404).json({ error: "Coverage not found" });
+    }
+
+    res.json(coverage);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+exports.getByUpazila = async (req, res) => {
+  try {
+    const coverage = await Coverage.findOne({
+      where: { UpazilaId: req.params.upazilaId },
+      include: {
+        model: Upazila
+      }
+    });
+
+    // if no coverage row → not available
+    if (!coverage) {
+      return res.json({
+        available: 0,
+        message: "Service is not available in this area yet"
+      });
+    }
+
+    res.json({
+      available: coverage.available,
+      notes: coverage.notes,
+      upazila: coverage.Upazila.name
+    });
+
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+exports.getFullTree = async (req, res) => {
+  try {
+    const data = await Division.findAll({
+      include: {
+        model: District,
+        include: {
+          model: Upazila,
+          include: Coverage
+        }
+      },
+      order: [["id", "ASC"]]
+    });
+
+    res.json(data);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
 exports.update = async (req, res) => {
   try {
     const coverage = await Coverage.findByPk(req.params.id);
@@ -41,7 +115,8 @@ exports.update = async (req, res) => {
     }
 
     await coverage.update({
-      available: req.body.available
+      available: req.body.available,
+      notes: req.body.notes
     });
 
     res.json({ message: "Coverage updated successfully" });

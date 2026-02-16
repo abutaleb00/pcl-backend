@@ -7,5 +7,6 @@ const { isAdmin } = require("../middlewares/role.middleware");
 router.post("/", ctrl.create);
 router.get("/", ctrl.getAll);
 router.put("/:id", ctrl.update);
+router.get("/:id", ctrl.getById);
 router.delete("/:id", ctrl.delete);
 module.exports = router;
