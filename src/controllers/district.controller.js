@@ -28,13 +28,16 @@ exports.getById = async (req, res) => {
             include: [
                 {
                     model: Division,
+                    as: "division",
                     attributes: ["id", "name"]
                 },
                 {
                     model: Upazila,
+                    as: "upazila",
                     include: [
                         {
-                            model: Coverage
+                            model: Coverage,
+                            as: "coverage",
                         }
                     ]
                 }

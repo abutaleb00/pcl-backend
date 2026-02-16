@@ -4,7 +4,11 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: false,
         }
-    });
+    },
+        {
+            tableName: 'divisions',
+            timestamps: true
+        });
 
     return Division;
 };

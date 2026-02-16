@@ -8,7 +8,11 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             allowNull: false,
         }
-    });
+    },
+        {
+            tableName: 'upazilas',
+            timestamps: true
+        });
 
     return Upazila;
 };

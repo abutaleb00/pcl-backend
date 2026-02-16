@@ -4,12 +4,13 @@ exports.create = async (req, res) => {
   try {
     const { UpazilaId, available, notes } = req.body;
 
+    // Check if Upazila exists
     const upazila = await Upazila.findByPk(UpazilaId);
     if (!upazila) {
       return res.status(404).json({ error: "Upazila not found" });
     }
 
-    // 🔴 prevent duplicate coverage
+    // Prevent duplicate coverage
     const existing = await Coverage.findOne({ where: { UpazilaId } });
     if (existing) {
       return res.status(400).json({
@@ -29,13 +30,11 @@ exports.create = async (req, res) => {
   }
 };
 
-
 exports.getAll = async (req, res) => {
   try {
     const data = await Coverage.findAll({
       include: {
-        model: Upazila,
-        as: "upazila"
+        model: Upazila // No alias needed
       }
     });
     res.json(data);
@@ -48,8 +47,7 @@ exports.getById = async (req, res) => {
   try {
     const coverage = await Coverage.findByPk(req.params.id, {
       include: {
-        model: Upazila,
-        as: "upazila"
+        model: Upazila // No alias needed
       }
     });
 
@@ -68,10 +66,11 @@ exports.getByUpazila = async (req, res) => {
     const coverage = await Coverage.findOne({
       where: { UpazilaId: req.params.upazilaId },
       include: {
-        model: Upazila,
-        as: "upazila"
+        model: Upazila // No alias needed
       }
     });
+
+    // If no coverage row found
     if (!coverage) {
       return res.json({
         available: 0,
@@ -82,7 +81,7 @@ exports.getByUpazila = async (req, res) => {
     res.json({
       available: coverage.available,
       notes: coverage.notes,
-      upazila: coverage.upazila.name
+      upazila: coverage.Upazila.name // Access via capitalized model name
     });
 
   } catch (err) {
@@ -94,14 +93,11 @@ exports.getFullTree = async (req, res) => {
   try {
     const data = await Division.findAll({
       include: {
-        model: District,
-        as: "districts",
+        model: District, // No alias needed
         include: {
-          model: Upazila,
-          as: "upazilas",
+          model: Upazila, // No alias needed
           include: {
-            model: Coverage,
-            as: "coverage"
+            model: Coverage // No alias needed
           }
         }
       },
@@ -114,6 +110,7 @@ exports.getFullTree = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
 exports.update = async (req, res) => {
   try {
     const coverage = await Coverage.findByPk(req.params.id);

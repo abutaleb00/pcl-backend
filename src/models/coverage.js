@@ -13,6 +13,9 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: true
         }
+    }, {
+        tableName: 'coverages',
+        timestamps: true
     });
 
     return Coverage;
