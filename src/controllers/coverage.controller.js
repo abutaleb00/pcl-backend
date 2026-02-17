@@ -34,7 +34,7 @@ exports.getAll = async (req, res) => {
   try {
     const data = await Coverage.findAll({
       include: {
-        model: Upazila // No alias needed
+        model: Upazila 
       }
     });
     res.json(data);
@@ -47,7 +47,7 @@ exports.getById = async (req, res) => {
   try {
     const coverage = await Coverage.findByPk(req.params.id, {
       include: {
-        model: Upazila // No alias needed
+        model: Upazila 
       }
     });
 
@@ -66,7 +66,7 @@ exports.getByUpazila = async (req, res) => {
     const coverage = await Coverage.findOne({
       where: { UpazilaId: req.params.upazilaId },
       include: {
-        model: Upazila // No alias needed
+        model: Upazila 
       }
     });
 
@@ -81,7 +81,7 @@ exports.getByUpazila = async (req, res) => {
     res.json({
       available: coverage.available,
       notes: coverage.notes,
-      upazila: coverage.Upazila.name // Access via capitalized model name
+      upazila: coverage.Upazila.name 
     });
 
   } catch (err) {
@@ -93,11 +93,11 @@ exports.getFullTree = async (req, res) => {
   try {
     const data = await Division.findAll({
       include: {
-        model: District, // No alias needed
+        model: District, 
         include: {
-          model: Upazila, // No alias needed
+          model: Upazila, 
           include: {
-            model: Coverage // No alias needed
+            model: Coverage 
           }
         }
       },
