@@ -21,10 +21,15 @@ module.exports = (sequelize, DataTypes) => {
         status: {
             type: DataTypes.TINYINT,
             defaultValue: 1
+        },
+        durationType: {
+            type: DataTypes.ENUM('month', 'year', 'minute'),
+            defaultValue: 'month',
+            allowNull: false
         }
     }, {
         tableName: 'packages',
-        timestamps: true 
+        timestamps: true
     });
 
     return Package;
