@@ -21,9 +21,25 @@ exports.create = async (req, res) => {
 exports.getAll = async (req, res) => {
     try {
         const upazilas = await Upazila.findAll({
+            include: [
+                {
+                    model: District,
+                    attributes: ["name"]
+                }
+            ],
             order: [["id", "ASC"]]
         });
-        res.json(upazilas);
+
+        const formattedData = upazilas.map(u => ({
+            id: u.id,
+            name: u.name,
+            district: u.District?.name || "Unknown",
+            DistrictId: u.DistrictId,
+            createdAt: u.createdAt,
+            updatedAt: u.updatedAt
+        }));
+
+        res.json(formattedData);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
