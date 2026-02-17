@@ -48,25 +48,24 @@ exports.create = async (req, res) => {
 };
 
 exports.getAll = async (req, res) => {
-  const packages = await Package.findAll({
-    where: { status: 1 },
-    include: [{ model: PackageFeature, as: "features" }],
-    order: [["order", "ASC"], ["price", "ASC"]]
-  });
+  try {
+    const packages = await Package.findAll({
+      where: { status: 1 },
+      include: [{ model: PackageFeature }],
+      order: [["order", "ASC"], ["price", "ASC"]]
+    });
 
-  res.json(packages);
+    res.json(packages);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };
 
 
 exports.getById = async (req, res) => {
   try {
     const pkg = await Package.findByPk(req.params.id, {
-      include: [
-        {
-          model: PackageFeature,
-          as: "features"
-        }
-      ]
+      include: [{ model: PackageFeature }]
     });
 
     if (!pkg) {
@@ -113,7 +112,6 @@ exports.update = async (req, res) => {
       isPopular
     }, { transaction });
 
-    // replace features
     await PackageFeature.destroy({
       where: { package_id: pkg.id },
       transaction
@@ -130,7 +128,6 @@ exports.update = async (req, res) => {
     }
 
     await transaction.commit();
-
     res.json({ message: "Package updated" });
 
   } catch (err) {
@@ -140,11 +137,15 @@ exports.update = async (req, res) => {
 };
 
 exports.remove = async (req, res) => {
-  const pkg = await Package.findByPk(req.params.id);
-  if (!pkg) {
-    return res.status(404).json({ message: "Package not found" });
-  }
+  try {
+    const pkg = await Package.findByPk(req.params.id);
+    if (!pkg) {
+      return res.status(404).json({ message: "Package not found" });
+    }
 
-  await pkg.destroy();
-  res.json({ message: "Package deleted successfully" });
+    await pkg.destroy();
+    res.json({ message: "Package deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };
