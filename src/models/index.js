@@ -1,16 +1,13 @@
 const { Sequelize, DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
 
-/* ===============================
-   Initialize DB
-================================ */
 const db = {};
 
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
 /* ===============================
-   Models
+   Models Initialization
 ================================ */
 
 /* Auth */
@@ -50,7 +47,7 @@ db.ContactEmail = require("./contactEmail")(sequelize, DataTypes);
 db.ContactInfo = require("./contactInfo")(sequelize, DataTypes);
 
 /* ===============================
-   Associations (SIMPLIFIED)
+   Associations
 ================================ */
 
 /* User <-> Blog */
@@ -80,28 +77,37 @@ db.Package.belongsTo(db.Service, { foreignKey: "service_id" });
 db.Package.hasMany(db.PackageFeature, { foreignKey: "package_id", onDelete: "CASCADE" });
 db.PackageFeature.belongsTo(db.Package, { foreignKey: "package_id" });
 
-/* ===============================
-   Coverage Relations (CLEAN)
-================================ */
-
-/* Division <-> District */
+/* Coverage Relations */
 db.Division.hasMany(db.District, { foreignKey: "DivisionId", onDelete: "CASCADE" });
 db.District.belongsTo(db.Division, { foreignKey: "DivisionId" });
 
-/* District <-> Upazila */
 db.District.hasMany(db.Upazila, { foreignKey: "DistrictId", onDelete: "CASCADE" });
 db.Upazila.belongsTo(db.District, { foreignKey: "DistrictId" });
 
-/* Upazila <-> Coverage */
 db.Upazila.hasOne(db.Coverage, { foreignKey: "UpazilaId", onDelete: "CASCADE" });
 db.Coverage.belongsTo(db.Upazila, { foreignKey: "UpazilaId" });
 
+/* Contact Relations (FIXED WITH ALIASES)
+   The 'as' property here must match the 'as' in your controller's 'include'
+*/
+db.Contact.hasMany(db.ContactEmail, {
+   foreignKey: "contact_id",
+   as: "emails", // This matches controller logic
+   onDelete: "CASCADE"
+});
+db.ContactEmail.belongsTo(db.Contact, {
+   foreignKey: "contact_id",
+   as: "contact"
+});
 
-/* Contact Relations */
-db.Contact.hasMany(db.ContactEmail, { foreignKey: "contact_id", onDelete: "CASCADE" });
-db.ContactEmail.belongsTo(db.Contact, { foreignKey: "contact_id" });
-
-db.Contact.hasMany(db.ContactPhone, { foreignKey: 'contact_id', onDelete: 'CASCADE' });
-db.ContactPhone.belongsTo(db.Contact, { foreignKey: 'contact_id' });
+db.Contact.hasMany(db.ContactPhone, {
+   foreignKey: 'contact_id',
+   as: "phones", // This matches controller logic
+   onDelete: 'CASCADE'
+});
+db.ContactPhone.belongsTo(db.Contact, {
+   foreignKey: 'contact_id',
+   as: "contact"
+});
 
 module.exports = db;

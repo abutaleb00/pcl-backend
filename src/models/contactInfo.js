@@ -11,6 +11,16 @@ module.exports = (sequelize, DataTypes) => {
             email: DataTypes.STRING,
             map_embed: DataTypes.TEXT,
             map_url: DataTypes.STRING,
+            socials: {
+                type: DataTypes.TEXT,
+                get() {
+                    const value = this.getDataValue('socials');
+                    return value ? JSON.parse(value) : [];
+                },
+                set(value) {
+                    this.setDataValue('socials', JSON.stringify(value));
+                }
+            },
             facebook: DataTypes.STRING,
             whatsapp: DataTypes.STRING,
             created_at: DataTypes.DATE,

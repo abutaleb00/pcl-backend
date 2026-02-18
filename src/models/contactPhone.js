@@ -1,18 +1,10 @@
 module.exports = (sequelize, DataTypes) => {
-    const ContactPhone = sequelize.define(
-        'ContactPhone',
-        {
-            phone: {
-                type: DataTypes.STRING,
-                allowNull: false,
-            },
-        },
-        {
-            tableName: 'contact_phones',
-            timestamps: false,
-            underscored: true,
-        }
-    );
-
-    return ContactPhone;
+    return sequelize.define('ContactPhone', {
+        contact_name: { type: DataTypes.STRING, allowNull: true },
+        phone: { type: DataTypes.STRING, allowNull: false },
+    }, {
+        tableName: 'contact_phones',
+        timestamps: false,
+        underscored: true,
+    });
 };
