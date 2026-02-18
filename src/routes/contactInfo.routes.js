@@ -7,7 +7,7 @@ router.get("/public", publicController.getPublicContact);
 
 // 2. Generic/Root routes last
 router.get("/", controller.get);
-router.post("/", controller.save);
-router.put("/", controller.save);
+router.post("/new", controller.save);
+router.put("/update", controller.save);
 
 module.exports = router;

@@ -70,7 +70,7 @@ app.use("/api/districts", require("./routes/district.routes"));
 app.use("/api/upazilas", require("./routes/upazila.routes"));
 app.use("/api/coverage", require("./routes/coverage.routes"));
 
-app.use("/api/contact-info", require("./routes/contactInfo.routes"));
+app.use("/api/contactinfo", require("./routes/contactInfo.routes"));
 app.use("/api/inquiries", require("./routes/inquiry.routes"));
 
 app.use("/api/blogs", require("./routes/blog.routes"));
