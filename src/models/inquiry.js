@@ -29,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
             },
 
             status: {
-                type: DataTypes.ENUM("new", "read", "replied", "closed"),
+                type: DataTypes.ENUM("new", "processing", "contacted", "resolved", "cancelled"),
                 defaultValue: "new",
             },
         },

@@ -5,6 +5,7 @@ const { isAdmin } = require("../middlewares/role.middleware");
 
 router.post("/", inquiry.create); // public
 router.get("/", verifyToken, isAdmin, inquiry.getAll);
+router.put("/:id/status", verifyToken, isAdmin, inquiry.updateStatus);
 router.put("/:id", verifyToken, isAdmin, inquiry.update);
 router.delete("/:id", verifyToken, isAdmin, inquiry.remove);
 

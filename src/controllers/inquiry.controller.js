@@ -23,14 +23,83 @@ exports.getAll = async (req, res) => {
 };
 
 /**
- * UPDATE STATUS (Admin)
+ * UPDATE STATUS ONLY
+ * PATCH /api/inquiries/:id/status
+ */
+exports.updateStatus = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { status } = req.body;
+
+        const inquiry = await Inquiry.findByPk(id);
+        if (!inquiry) {
+            return res.status(404).json({ error: "Inquiry not found" });
+        }
+
+        // Must match the ENUM values in your Model exactly
+        const allowedStatuses = ["new", "processing", "contacted", "resolved", "cancelled"];
+
+        if (!status || !allowedStatuses.includes(status)) {
+            return res.status(400).json({
+                error: `Invalid status. Choose from: ${allowedStatuses.join(", ")}`
+            });
+        }
+
+        // Update the instance
+        inquiry.status = status;
+        await inquiry.save(); // save() is often more reliable for ENUM instances
+
+        res.json({
+            message: "Status updated successfully",
+            id: inquiry.id,
+            status: inquiry.status
+        });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+/**
+ * UPDATE STATUS / SERVICE INTEREST (Admin)
  */
 exports.update = async (req, res) => {
-    const inquiry = await Inquiry.findByPk(req.params.id);
-    if (!inquiry) return res.status(404).json({ error: "Not found" });
+    try {
+        const { id } = req.params;
+        const inquiry = await Inquiry.findByPk(id);
 
-    await inquiry.update(req.body);
-    res.json({ message: "Inquiry updated" });
+        if (!inquiry) {
+            return res.status(404).json({ error: "Inquiry not found" });
+        }
+
+        // 1. Extract service_interest along with other fields
+        const { status, message, subject, service_interest } = req.body;
+
+        // 2. Data Validation for Status
+        const allowedStatuses = ['new', 'processing', 'contacted', 'resolved', 'cancelled'];
+
+        // Only validate if status is actually provided and not empty
+        if (status && status.trim() !== "" && !allowedStatuses.includes(status)) {
+            return res.status(400).json({
+                error: `Invalid status. Must be one of: ${allowedStatuses.join(', ')}`
+            });
+        }
+
+        // 3. Update the database
+        // We include service_interest in the update object
+        await inquiry.update({
+            status: status || inquiry.status, // Keep old status if new one is empty
+            message,
+            subject,
+            service_interest
+        });
+
+        res.json({
+            message: "Inquiry updated successfully",
+            data: inquiry
+        });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 };
 
 /**

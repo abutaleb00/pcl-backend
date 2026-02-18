@@ -34,10 +34,23 @@ exports.getAll = async (req, res) => {
   try {
     const data = await Coverage.findAll({
       include: {
-        model: Upazila 
+        model: Upazila,
+        attributes: ["name"]
       }
     });
-    res.json(data);
+
+    const formattedData = data.map(item => ({
+      id: item.id,
+      UpazilaId: item.UpazilaId,
+      available: item.available,
+      notes: item.notes,
+      createdAt: item.createdAt,
+      updatedAt: item.updatedAt,
+      // Pass the name at the root level
+      upazila_name: item.Upazila?.name || "Unknown"
+    }));
+
+    res.json(formattedData);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -47,7 +60,7 @@ exports.getById = async (req, res) => {
   try {
     const coverage = await Coverage.findByPk(req.params.id, {
       include: {
-        model: Upazila 
+        model: Upazila
       }
     });
 
@@ -66,7 +79,7 @@ exports.getByUpazila = async (req, res) => {
     const coverage = await Coverage.findOne({
       where: { UpazilaId: req.params.upazilaId },
       include: {
-        model: Upazila 
+        model: Upazila
       }
     });
 
@@ -81,7 +94,7 @@ exports.getByUpazila = async (req, res) => {
     res.json({
       available: coverage.available,
       notes: coverage.notes,
-      upazila: coverage.Upazila.name 
+      upazila: coverage.Upazila.name
     });
 
   } catch (err) {
@@ -93,11 +106,11 @@ exports.getFullTree = async (req, res) => {
   try {
     const data = await Division.findAll({
       include: {
-        model: District, 
+        model: District,
         include: {
-          model: Upazila, 
+          model: Upazila,
           include: {
-            model: Coverage 
+            model: Coverage
           }
         }
       },

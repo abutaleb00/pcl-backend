@@ -7,6 +7,7 @@ const { isAdmin } = require("../middlewares/role.middleware");
 router.post("/", controller.create);
 router.get("/", controller.getAll);
 router.get("/:id", controller.getById);
+router.get("/service/:serviceId", controller.getByServiceId);
 router.put("/:id", verifyToken, isAdmin, controller.update);
 router.delete("/:id", verifyToken, isAdmin, controller.remove);
 module.exports = router;

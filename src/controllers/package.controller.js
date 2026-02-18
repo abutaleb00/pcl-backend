@@ -63,6 +63,32 @@ exports.getAll = async (req, res) => {
   }
 };
 
+exports.getByServiceId = async (req, res) => {
+  try {
+    const { serviceId } = req.params;
+
+    const packages = await Package.findAll({
+      where: { 
+        service_id: serviceId,
+        status: 1 // Optional: only show active packages
+      },
+      include: [{ 
+        model: PackageFeature 
+      }],
+      order: [["order", "ASC"], ["price", "ASC"]]
+    });
+
+    if (!packages || packages.length === 0) {
+      return res.status(404).json({ 
+        message: "No packages found for this service" 
+      });
+    }
+
+    res.json(packages);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
 
 exports.getById = async (req, res) => {
   try {

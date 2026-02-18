@@ -55,6 +55,30 @@ exports.softDelete = async (req, res) => {
 };
 
 /**
+ * GET USER PROFILE (Self)
+ * GET /api/users/profile
+ */
+exports.getProfile = async (req, res) => {
+    try {
+        // req.user.id is populated by your JWT authentication middleware
+        const userId = req.user.id; 
+
+        const user = await User.findByPk(userId, {
+            attributes: { exclude: ["password", "deleted_at"] }
+        });
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        res.json(user);
+    } catch (error) {
+        console.error("Get profile error:", error);
+        res.status(500).json({ error: "Failed to retrieve profile data" });
+    }
+};
+
+/**
  * RESTORE soft deleted user (optional but recommended)
  */
 exports.restore = async (req, res) => {
