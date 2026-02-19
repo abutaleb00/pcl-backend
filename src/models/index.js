@@ -7,7 +7,7 @@ db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
 /* ===============================
-   Models Initialization
+    Models Initialization
 ================================ */
 
 /* Auth */
@@ -46,11 +46,14 @@ db.ContactPhone = require("./contactPhone")(sequelize, DataTypes);
 db.ContactEmail = require("./contactEmail")(sequelize, DataTypes);
 db.ContactInfo = require("./contactInfo")(sequelize, DataTypes);
 
-/* Clients (NEWLY ADDED) */
+/* Clients */
 db.Client = require("./client")(sequelize, DataTypes);
 
+/* Sister Concerns (Sub Companies) - NEWLY ADDED */
+db.SubCompany = require("./subCompany")(sequelize, DataTypes);
+
 /* ===============================
-   Associations
+    Associations
 ================================ */
 
 /* User <-> Blog */
