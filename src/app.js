@@ -56,27 +56,23 @@ app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
    Routes
 ================================ */
 
-app.use("/", require("./routes/sitemap.routes"));
 
 app.use("/api/auth", require("./routes/auth.routes"));
 app.use("/api/users", require("./routes/user.routes"));
-
+app.use("/api/partner", require("./routes/partner.routes"));
 app.use("/api/sliders", require("./routes/sliders.routes"));
 app.use("/api/services", require("./routes/services.routes"));
 app.use("/api/packages", require("./routes/packages.routes"));
-
 app.use("/api/divisions", require("./routes/division.routes"));
 app.use("/api/districts", require("./routes/district.routes"));
 app.use("/api/upazilas", require("./routes/upazila.routes"));
 app.use("/api/coverage", require("./routes/coverage.routes"));
-
 app.use("/api/contactinfo", require("./routes/contactInfo.routes"));
 app.use("/api/inquiries", require("./routes/inquiry.routes"));
-
 app.use("/api/blogs", require("./routes/blog.routes"));
 app.use("/api/seo", require("./routes/seo.routes"));
 app.use("/api/dashboard", require("./routes/dashboard.routes"));
-
+app.use("/", require("./routes/sitemap.routes"));
 /* ===============================
    Health Check
 ================================ */

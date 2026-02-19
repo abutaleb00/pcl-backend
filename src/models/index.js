@@ -46,6 +46,9 @@ db.ContactPhone = require("./contactPhone")(sequelize, DataTypes);
 db.ContactEmail = require("./contactEmail")(sequelize, DataTypes);
 db.ContactInfo = require("./contactInfo")(sequelize, DataTypes);
 
+/* Clients (NEWLY ADDED) */
+db.Client = require("./client")(sequelize, DataTypes);
+
 /* ===============================
    Associations
 ================================ */
@@ -87,12 +90,10 @@ db.Upazila.belongsTo(db.District, { foreignKey: "DistrictId" });
 db.Upazila.hasOne(db.Coverage, { foreignKey: "UpazilaId", onDelete: "CASCADE" });
 db.Coverage.belongsTo(db.Upazila, { foreignKey: "UpazilaId" });
 
-/* Contact Relations (FIXED WITH ALIASES)
-   The 'as' property here must match the 'as' in your controller's 'include'
-*/
+/* Contact Relations */
 db.Contact.hasMany(db.ContactEmail, {
    foreignKey: "contact_id",
-   as: "emails", // This matches controller logic
+   as: "emails",
    onDelete: "CASCADE"
 });
 db.ContactEmail.belongsTo(db.Contact, {
@@ -102,7 +103,7 @@ db.ContactEmail.belongsTo(db.Contact, {
 
 db.Contact.hasMany(db.ContactPhone, {
    foreignKey: 'contact_id',
-   as: "phones", // This matches controller logic
+   as: "phones",
    onDelete: 'CASCADE'
 });
 db.ContactPhone.belongsTo(db.Contact, {
