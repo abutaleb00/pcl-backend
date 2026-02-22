@@ -1,11 +1,16 @@
-version: '3.8'
 services:
-  api:
+  app:
     build: .
+    container_name: pcl-backend
     ports:
-      - "5000:5000"
+      - "5001:5000"
     env_file:
       - .env
-    volumes:
-      - ./uploads:/usr/src/app/uploads # Persist uploads folder
-    restart: always
+    environment:
+      - NODE_ENV=production
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+    restart: unless-stopped

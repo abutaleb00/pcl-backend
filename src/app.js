@@ -68,7 +68,7 @@ app.use("/api/divisions", require("./routes/division.routes"));
 app.use("/api/districts", require("./routes/district.routes"));
 app.use("/api/upazilas", require("./routes/upazila.routes"));
 app.use("/api/coverage", require("./routes/coverage.routes"));
-app.use("/api/contactinfo", require("./routes/contactInfo.routes"));
+app.use("/api/information", require("./routes/information.routes"));
 app.use("/api/inquiries", require("./routes/inquiry.routes"));
 app.use("/api/blogs", require("./routes/blog.routes"));
 app.use("/api/seo", require("./routes/seo.routes"));

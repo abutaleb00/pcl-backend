@@ -1,5 +1,9 @@
 node_modules
-npm-debug.log
-.env
 .git
 .gitignore
+.env
+*.md
+uploads
+**/build
+**/*.zip
+.DS_Store
