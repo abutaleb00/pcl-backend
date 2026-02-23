@@ -1,0 +1,20 @@
+docker compose build --no-cache
+docker save -o pcl-backend.tar pcl-backend:latest
+docker save -o D:\DockerBackups\pcl-backend.tar pcl-backend:latest
+ scp -P 10022 location/pcl-backend.tar commlink@103.132.92.93:/var/www/src/
+
+in remote machine : 
+docker stop pcl-backend
+docker rm pcl-backend
+docker system prune -a
+docker load -i pcl-backend.tar
+cd /var/www/src/ && docker run -d  --name pcl-backend -p 5000:5000 --env-file .env pcl-backend:latest
+curl -s http://localhost:5000/health
+
+
+docker run -d --name pcl-backend -p 5000:5000 --env-file .env -v /var/www/src/uploads:/usr/src/app/uploads pcl-backend:latest
+docker load -i pcl-backend.tar
+docker compose up -d
+
+
+sudo systemctl reload nginx

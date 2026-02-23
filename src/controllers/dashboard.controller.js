@@ -48,8 +48,8 @@ exports.getDashboard = async (req, res) => {
         /* ===================== LATEST USERS ===================== */
 
         const latestUsers = await User.findAll({
-            attributes: ["id", "name", "email", "createdAt", "status"],
-            order: [["createdAt", "DESC"]],
+            attributes: ["id", "name", "email", "created_at", "status"],
+            order: [["created_at", "DESC"]],
             limit: 5
         });
 
@@ -68,11 +68,11 @@ exports.getDashboard = async (req, res) => {
 
         const monthlyUsers = await User.findAll({
             attributes: [
-                [db.Sequelize.fn("MONTH", db.Sequelize.col("createdAt")), "month"],
+                [db.Sequelize.fn("MONTH", db.Sequelize.col("created_at")), "month"],
                 [db.Sequelize.fn("COUNT", db.Sequelize.col("id")), "total"]
             ],
             where: {
-                createdAt: { [Op.gte]: startOfYear }
+                created_at: { [Op.gte]: startOfYear }
             },
             group: ["month"],
             order: [[db.Sequelize.literal("month"), "ASC"]]

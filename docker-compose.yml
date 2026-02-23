@@ -1,9 +1,13 @@
 services:
   app:
+    image: pcl-backend:latest
     build: .
     container_name: pcl-backend
     ports:
       - "5001:5000"
+    volumes:
+      # Host path (./uploads) : Container path (/usr/src/app/uploads)
+      - ./uploads:/usr/src/app/uploads
     env_file:
       - .env
     environment:

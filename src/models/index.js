@@ -49,8 +49,15 @@ db.ContactInfo = require("./contactInfo")(sequelize, DataTypes);
 /* Clients */
 db.Client = require("./client")(sequelize, DataTypes);
 
-/* Sister Concerns (Sub Companies) - NEWLY ADDED */
+/* Sister Concerns (Sub Companies) */
 db.SubCompany = require("./subCompany")(sequelize, DataTypes);
+
+/* Products List */
+db.Product = require("./product")(sequelize, DataTypes);
+
+/* Real-time Chat Support */
+db.ChatRoom = require("./chatRoom")(sequelize, DataTypes);
+db.ChatMessage = require("./chatMessage")(sequelize, DataTypes);
 
 /* ===============================
     Associations
@@ -112,6 +119,23 @@ db.Contact.hasMany(db.ContactPhone, {
 db.ContactPhone.belongsTo(db.Contact, {
    foreignKey: 'contact_id',
    as: "contact"
+});
+
+/* Chat Relations */
+db.ChatRoom.hasMany(db.ChatMessage, {
+   foreignKey: "room_id",
+   as: "messages",
+   onDelete: "CASCADE"
+});
+
+db.ChatMessage.belongsTo(db.ChatRoom, {
+   foreignKey: "room_id",
+   as: "room"
+});
+
+db.ChatMessage.belongsTo(db.User, {
+   foreignKey: "sender_id",
+   as: "staffMember"
 });
 
 module.exports = db;
